@@ -1,86 +1,127 @@
-1. Seu nome: Tiago
-2. Sua idade: 13 anos
-3. Nick no Discord: thziin_01
-4. Nick no Roblox: y92i9
-5. Tem experiência como staff? Sim, já fui como Moderador e Dev em outros servidores RP.
-6. Você sabe que não poderá favorecer ninguém, e que terá que ser justo, certo? Sim, entendo perfeitamente e serei imparcial sempre.
-7. Sabe que terá que usar gramática, né? Sim, usarei a gramática corretamente sempre que estiver comunicando algo.
+local ScreenGui = Instance.new("ScreenGui")
+local Frame = Instance.new("Frame")
+local Title = Instance.new("TextLabel")
+local KeyInput = Instance.new("TextBox")
+local VerifyButton = Instance.new("TextButton")
+local StatusLabel = Instance.new("TextLabel")
 
-8. O que é RDM?
-RDM (Random Deathmatch) é matar outra pessoa sem motivo válido no RP.
+ScreenGui.Parent = game:GetService("CoreGui")
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
-9. O que é VDM?
-VDM (Vehicle Deathmatch) é usar um veículo para atropelar alguém sem motivo ou contexto de RP.
+Frame.Parent = ScreenGui
+Frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+Frame.BorderSizePixel = 0
+Frame.Position = UDim2.new(0.5, -150, 0.5, -100)
+Frame.Size = UDim2.new(0, 300, 0, 200)
 
-10. O que é Meta Gaming?
-Meta Gaming é usar informações obtidas fora do jogo (como Discord ou live) dentro do RP.
+Title.Parent = Frame
+Title.BackgroundTransparency = 1
+Title.Position = UDim2.new(0, 0, 0, 10)
+Title.Size = UDim2.new(1, 0, 0, 30)
+Title.Font = Enum.Font.GothamBold
+Title.Text = "ScriptsBinsAuth"
+Title.TextColor3 = Color3.fromRGB(56, 139, 253)
+Title.TextSize = 20
 
-11. O que é Combat Log (CL)?
-Combat Log é sair do jogo durante uma situação de combate para evitar consequências no RP.
+KeyInput.Parent = Frame
+KeyInput.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+KeyInput.BorderSizePixel = 0
+KeyInput.Position = UDim2.new(0.1, 0, 0.3, 0)
+KeyInput.Size = UDim2.new(0.8, 0, 0, 40)
+KeyInput.Font = Enum.Font.Gotham
+KeyInput.PlaceholderText = "Insira Sua Key"
+KeyInput.Text = ""
+KeyInput.TextColor3 = Color3.fromRGB(255, 255, 255)
+KeyInput.TextSize = 14
 
-12. Você fica online em qual parte do dia?
-Fico online principalmente no período da tarde e noite, entre 14h e 22h.
+VerifyButton.Parent = Frame
+VerifyButton.BackgroundColor3 = Color3.fromRGB(56, 139, 253)
+VerifyButton.BorderSizePixel = 0
+VerifyButton.Position = UDim2.new(0.25, 0, 0.6, 0)
+VerifyButton.Size = UDim2.new(0.5, 0, 0, 30)
+VerifyButton.Font = Enum.Font.GothamBold
+VerifyButton.Text = "Verificar Key"
+VerifyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+VerifyButton.TextSize = 14
 
-13. Por que deseja entrar para a staff? (mínimo 4 linhas)
-Desejo entrar para a staff porque gosto muito do servidor e quero contribuir para o crescimento da comunidade. Tenho experiência com moderação e sei lidar bem com situações de conflito de forma justa e educada. Acredito que posso ajudar a manter o RP organizado e divertido para todos. Também gosto de ajudar novos jogadores e manter o ambiente saudável.
+StatusLabel.Parent = Frame
+StatusLabel.BackgroundTransparency = 1
+StatusLabel.Position = UDim2.new(0, 0, 0.8, 0)
+StatusLabel.Size = UDim2.new(1, 0, 0, 20)
+StatusLabel.Font = Enum.Font.Gotham
+StatusLabel.Text = ""
+StatusLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+StatusLabel.TextSize = 14
 
-14. Você abusa dos poderes? Não, nunca abusei e nunca abusarei dos meus poderes como staff.
-15. Fale 5 regras do RP:
+local function getHWID()
+    local success, clientId = pcall(function()
+        return game:GetService("RbxAnalyticsService"):GetClientId()
+    end)
+    
+    if success and clientId then
+        return clientId
+    else
+        return "HWID_ERROR"
+    end
+end
 
-1. Proibido RDM
+local function verifyKey(key)
+    local apiKey = "lsamwxC2M"
+    local url = "https://scriptsbinsauth.vercel.app/api/verify-key"
+    local hwid = getHWID()
+    
+    local response = request({
+        Url = url,
+        Method = "POST",
+        Headers = {
+            ["Content-Type"] = "application/json",
+            ["Authorization"] = "Bearer " .. apiKey
+        },
+        Body = game:GetService("HttpService"):JSONEncode({
+            key = key,
+            hwid = hwid
+        })
+    })
+    
+    if response.Success then
+        local data = game:GetService("HttpService"):JSONDecode(response.Body)
+        return data.valid, data.message
+    else
+        return false, "Erro De Conexão Com o Servidor"
+    end
+end
 
-
-2. Proibido VDM
-
-
-3. Proibido Meta Gaming
-
-
-4. Proibido Combat Log
-
-
-5. É obrigatório seguir a coerência no RP
-
-
-
-16. Fale 5 regras do servidor:
-
-1. Respeitar todos os jogadores e staff
-
-
-2. Proibido uso de hacks ou scripts
-
-
-3. Proibido linguagem ofensiva
-
-
-4. Proibido divulgação de outros servidores
-
-
-5. Respeitar as ordens dos superiores e regras do Discord
-
-
-
-17. Cite comandos que você conhece:
-Eu conheço todos só me fale que eu respondo mas está aqui: Fly, speed, track ALL, ESP, REF, to, bring, e outros.
-
-18. O que é forçar RP? Dê um exemplo:
-Forçar RP é obrigar outro jogador a participar de uma ação sem o consentimento dele ou sem dar chances de resposta. Ex: Alguém aponta uma arma e diz "você está morto" sem dar tempo para reação.
-
-19. O que é Dark RP? Dê um exemplo:
-Dark RP é um estilo de roleplay mais pesado e realista, com crimes e situações ilegais. Ex: Tráfico de drogas, sequestro com negociação, etc.
-
-20. O que você faria se visse um superior ou outro staff abusando do mod?
-Gravaria ou tiraria print da situação e enviaria para a direção do servidor com uma denúncia formal.
-
-21. O que você faria se visse um script espalhado pelo mapa?
-Avisa a staff superior imediatamente e evitaria contato com o script, protegendo o servidor.
-
-22. O que é maturidade?
-Maturidade é saber agir com responsabilidade, respeito e equilíbrio em diversas situações.
-
-23. Você tem maturidade? Sim, tenho e sei lidar com situações difíceis com calma e seriedade.
-24. O que é responsabilidade?
-Responsabilidade é cumprir com seus deveres e entender as consequências de suas ações.
-
-25. Você tem responsabilidade? Sim, sou comprometido e sempre cumpro com o que me proponho a fazer.
+VerifyButton.MouseButton1Click:Connect(function()
+    local key = KeyInput.Text
+    
+    if key == "" then
+        StatusLabel.Text = "Por Favor Insira Uma Key"
+        StatusLabel.TextColor3 = Color3.fromRGB(255, 255, 0)
+        return
+    end
+    
+    VerifyButton.Text = "Verificando..."
+    StatusLabel.Text = "Verificando Key..."
+    StatusLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    
+    local success, message = verifyKey(key)
+    
+    if success then
+        StatusLabel.Text = message or "Key Válida"
+        
+        StatusLabel.TextColor3 = Color3.fromRGB(0, 255, 0)
+        
+                wait(2)
+        
+        ScreenGui:Destroy()
+        -- Seu Script Aqui
+    else
+        StatusLabel.Text = message or "Key Inválida"
+     
+        StatusLabel.TextColor3 = Color3.fromRGB(255, 0, 0)
+        
+                wait(2)
+        
+        VerifyButton.Text = "Verificar Key"
+    end
+end)
