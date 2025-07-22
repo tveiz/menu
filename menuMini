@@ -1,127 +1,544 @@
+local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
+local TweenService = game:GetService("TweenService")
+
+local player = Players.LocalPlayer
+
 local ScreenGui = Instance.new("ScreenGui")
-local Frame = Instance.new("Frame")
-local Title = Instance.new("TextLabel")
-local KeyInput = Instance.new("TextBox")
-local VerifyButton = Instance.new("TextButton")
-local StatusLabel = Instance.new("TextLabel")
-
+ScreenGui.Name = "KavoUIClone"
+ScreenGui.ResetOnSpawn = false
 ScreenGui.Parent = game:GetService("CoreGui")
-ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
-Frame.Parent = ScreenGui
-Frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-Frame.BorderSizePixel = 0
-Frame.Position = UDim2.new(0.5, -150, 0.5, -100)
-Frame.Size = UDim2.new(0, 300, 0, 200)
+local function UICorner(parent, radius)
+    local c = Instance.new("UICorner")
+    c.CornerRadius = UDim.new(0, radius)
+    c.Parent = parent
+end
 
-Title.Parent = Frame
-Title.BackgroundTransparency = 1
-Title.Position = UDim2.new(0, 0, 0, 10)
-Title.Size = UDim2.new(1, 0, 0, 30)
+local MainFrame = Instance.new("Frame")
+MainFrame.Name = "MainFrame"
+MainFrame.Size = UDim2.new(0, 600, 0, 400)
+MainFrame.Position = UDim2.new(0.5, -300, 0.5, -200)
+MainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 50)
+MainFrame.BorderSizePixel = 0
+MainFrame.Parent = ScreenGui
+MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+MainFrame.ClipsDescendants = true
+UICorner(MainFrame, 8)
+
+local Shadow = Instance.new("Frame")
+Shadow.Name = "Shadow"
+Shadow.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Shadow.Size = MainFrame.Size + UDim2.new(0, 10, 0, 10)
+Shadow.Position = MainFrame.Position - UDim2.new(0, 5, 0, 5)
+Shadow.BackgroundTransparency = 0.75
+Shadow.BorderSizePixel = 0
+Shadow.ZIndex = 0
+Shadow.AnchorPoint = Vector2.new(0.5, 0.5)
+Shadow.Parent = ScreenGui
+UICorner(Shadow, 8)
+
+MainFrame:GetPropertyChangedSignal("Position"):Connect(function()
+    Shadow.Position = MainFrame.Position - UDim2.new(0,5,0,5)
+end)
+MainFrame:GetPropertyChangedSignal("Size"):Connect(function()
+    Shadow.Size = MainFrame.Size + UDim2.new(0,10,0,10)
+end)
+
+local TitleBar = Instance.new("Frame")
+TitleBar.Name = "TitleBar"
+TitleBar.Size = UDim2.new(1, 0, 0, 40)
+TitleBar.BackgroundColor3 = Color3.fromRGB(45, 45, 80)
+TitleBar.BorderSizePixel = 0
+TitleBar.Parent = MainFrame
+UICorner(TitleBar, 8)
+
+local Title = Instance.new("TextLabel")
+Title.Name = "Title"
+Title.Text = "Kavo UI"
 Title.Font = Enum.Font.GothamBold
-Title.Text = "ScriptsBinsAuth"
-Title.TextColor3 = Color3.fromRGB(56, 139, 253)
-Title.TextSize = 20
+Title.TextSize = 22
+Title.TextColor3 = Color3.fromRGB(230, 230, 255)
+Title.BackgroundTransparency = 1
+Title.Size = UDim2.new(1, -100, 1, 0)
+Title.Position = UDim2.new(0, 20, 0, 0)
+Title.TextXAlignment = Enum.TextXAlignment.Left
+Title.Parent = TitleBar
 
-KeyInput.Parent = Frame
-KeyInput.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-KeyInput.BorderSizePixel = 0
-KeyInput.Position = UDim2.new(0.1, 0, 0.3, 0)
-KeyInput.Size = UDim2.new(0.8, 0, 0, 40)
-KeyInput.Font = Enum.Font.Gotham
-KeyInput.PlaceholderText = "Insira Sua Key"
-KeyInput.Text = ""
-KeyInput.TextColor3 = Color3.fromRGB(255, 255, 255)
-KeyInput.TextSize = 14
+local MinimizeButton = Instance.new("TextButton")
+MinimizeButton.Name = "MinimizeButton"
+MinimizeButton.Size = UDim2.new(0, 35, 0, 30)
+MinimizeButton.Position = UDim2.new(1, -80, 0, 5)
+MinimizeButton.BackgroundColor3 = Color3.fromRGB(60, 60, 100)
+MinimizeButton.Text = "-"
+MinimizeButton.TextColor3 = Color3.fromRGB(200, 200, 255)
+MinimizeButton.Font = Enum.Font.GothamBold
+MinimizeButton.TextSize = 25
+MinimizeButton.AutoButtonColor = false
+MinimizeButton.Parent = TitleBar
+UICorner(MinimizeButton, 6)
 
-VerifyButton.Parent = Frame
-VerifyButton.BackgroundColor3 = Color3.fromRGB(56, 139, 253)
-VerifyButton.BorderSizePixel = 0
-VerifyButton.Position = UDim2.new(0.25, 0, 0.6, 0)
-VerifyButton.Size = UDim2.new(0.5, 0, 0, 30)
-VerifyButton.Font = Enum.Font.GothamBold
-VerifyButton.Text = "Verificar Key"
-VerifyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-VerifyButton.TextSize = 14
+MinimizeButton.MouseEnter:Connect(function()
+    MinimizeButton.BackgroundColor3 = Color3.fromRGB(100, 100, 150)
+end)
+MinimizeButton.MouseLeave:Connect(function()
+    MinimizeButton.BackgroundColor3 = Color3.fromRGB(60, 60, 100)
+end)
 
-StatusLabel.Parent = Frame
-StatusLabel.BackgroundTransparency = 1
-StatusLabel.Position = UDim2.new(0, 0, 0.8, 0)
-StatusLabel.Size = UDim2.new(1, 0, 0, 20)
-StatusLabel.Font = Enum.Font.Gotham
-StatusLabel.Text = ""
-StatusLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-StatusLabel.TextSize = 14
+local CloseButton = Instance.new("TextButton")
+CloseButton.Name = "CloseButton"
+CloseButton.Size = UDim2.new(0, 35, 0, 30)
+CloseButton.Position = UDim2.new(1, -40, 0, 5)
+CloseButton.BackgroundColor3 = Color3.fromRGB(200, 40, 60)
+CloseButton.Text = "X"
+CloseButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+CloseButton.Font = Enum.Font.GothamBold
+CloseButton.TextSize = 25
+CloseButton.AutoButtonColor = false
+CloseButton.Parent = TitleBar
+UICorner(CloseButton, 6)
 
-local function getHWID()
-    local success, clientId = pcall(function()
-        return game:GetService("RbxAnalyticsService"):GetClientId()
+CloseButton.MouseEnter:Connect(function()
+    CloseButton.BackgroundColor3 = Color3.fromRGB(255, 70, 90)
+end)
+CloseButton.MouseLeave:Connect(function()
+    CloseButton.BackgroundColor3 = Color3.fromRGB(200, 40, 60)
+end)
+
+local Sidebar = Instance.new("Frame")
+Sidebar.Name = "Sidebar"
+Sidebar.BackgroundColor3 = Color3.fromRGB(38, 38, 68)
+Sidebar.Size = UDim2.new(0, 140, 1, -40)
+Sidebar.Position = UDim2.new(0, 0, 0, 40)
+Sidebar.Parent = MainFrame
+UICorner(Sidebar, 8)
+
+local TabListLayout = Instance.new("UIListLayout")
+TabListLayout.Padding = UDim.new(0, 10)
+TabListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+TabListLayout.Parent = Sidebar
+
+local ContentFrame = Instance.new("Frame")
+ContentFrame.Name = "ContentFrame"
+ContentFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 50)
+ContentFrame.Size = UDim2.new(1, -140, 1, -40)
+ContentFrame.Position = UDim2.new(0, 140, 0, 40)
+ContentFrame.Parent = MainFrame
+UICorner(ContentFrame, 8)
+
+local tabs = {}
+local contents = {}
+
+local function createTab(name)
+    local button = Instance.new("TextButton")
+    button.Name = name.."Tab"
+    button.Size = UDim2.new(1, -10, 0, 40)
+    button.BackgroundColor3 = Color3.fromRGB(45, 45, 80)
+    button.Text = name
+    button.Font = Enum.Font.GothamSemibold
+    button.TextSize = 18
+    button.TextColor3 = Color3.fromRGB(190, 190, 255)
+    button.AutoButtonColor = false
+    button.Parent = Sidebar
+    UICorner(button, 6)
+
+    button.MouseEnter:Connect(function()
+        if not button:GetAttribute("Selected") then
+            button.BackgroundColor3 = Color3.fromRGB(70, 70, 120)
+            button.TextColor3 = Color3.fromRGB(255, 255, 255)
+        end
     end)
-    
-    if success and clientId then
-        return clientId
-    else
-        return "HWID_ERROR"
-    end
+    button.MouseLeave:Connect(function()
+        if not button:GetAttribute("Selected") then
+            button.BackgroundColor3 = Color3.fromRGB(45, 45, 80)
+            button.TextColor3 = Color3.fromRGB(190, 190, 255)
+        end
+    end)
+
+    local content = Instance.new("Frame")
+    content.Name = name.."Content"
+    content.Size = UDim2.new(1, -20, 1, -20)
+    content.Position = UDim2.new(0, 10, 0, 10)
+    content.BackgroundTransparency = 1
+    content.Visible = false
+    content.Parent = ContentFrame
+
+    local contentLayout = Instance.new("UIListLayout")
+    contentLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    contentLayout.Padding = UDim.new(0, 8)
+    contentLayout.Parent = content
+
+    tabs[name] = button
+    contents[name] = content
+
+    button.MouseButton1Click:Connect(function()
+        selectTab(name)
+    end)
+
+    return button, content
 end
 
-local function verifyKey(key)
-    local apiKey = "lsamwxC2M"
-    local url = "https://scriptsbinsauth.vercel.app/api/verify-key"
-    local hwid = getHWID()
-    
-    local response = request({
-        Url = url,
-        Method = "POST",
-        Headers = {
-            ["Content-Type"] = "application/json",
-            ["Authorization"] = "Bearer " .. apiKey
-        },
-        Body = game:GetService("HttpService"):JSONEncode({
-            key = key,
-            hwid = hwid
-        })
-    })
-    
-    if response.Success then
-        local data = game:GetService("HttpService"):JSONDecode(response.Body)
-        return data.valid, data.message
-    else
-        return false, "Erro De Conexão Com o Servidor"
+local currentTab = nil
+function selectTab(name)
+    if currentTab == name then return end
+    for tabName, btn in pairs(tabs) do
+        if tabName == name then
+            btn.BackgroundColor3 = Color3.fromRGB(70, 70, 120)
+            btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+            btn:SetAttribute("Selected", true)
+            contents[tabName].Visible = true
+        else
+            btn.BackgroundColor3 = Color3.fromRGB(45, 45, 80)
+            btn.TextColor3 = Color3.fromRGB(190, 190, 255)
+            btn:SetAttribute("Selected", false)
+            contents[tabName].Visible = false
+        end
     end
+    currentTab = name
 end
 
-VerifyButton.MouseButton1Click:Connect(function()
-    local key = KeyInput.Text
-    
-    if key == "" then
-        StatusLabel.Text = "Por Favor Insira Uma Key"
-        StatusLabel.TextColor3 = Color3.fromRGB(255, 255, 0)
+local function createToggle(parent, text, default, callback)
+    local frame = Instance.new("Frame")
+    frame.Size = UDim2.new(1, 0, 0, 30)
+    frame.BackgroundTransparency = 1
+    frame.Parent = parent
+
+    local label = Instance.new("TextLabel")
+    label.Text = text
+    label.Font = Enum.Font.GothamSemibold
+    label.TextSize = 17
+    label.TextColor3 = Color3.fromRGB(220, 220, 255)
+    label.BackgroundTransparency = 1
+    label.Size = UDim2.new(1, -50, 1, 0)
+    label.TextXAlignment = Enum.TextXAlignment.Left
+    label.Parent = frame
+
+    local toggleBtn = Instance.new("Frame")
+    toggleBtn.Size = UDim2.new(0, 38, 0, 22)
+    toggleBtn.Position = UDim2.new(1, -42, 0, 4)
+    toggleBtn.BackgroundColor3 = default and Color3.fromRGB(0, 200, 130) or Color3.fromRGB(40, 40, 50)
+    toggleBtn.Parent = frame
+    UICorner(toggleBtn, 12)
+
+    local circle = Instance.new("Frame")
+    circle.Size = UDim2.new(0, 18, 0, 18)
+    circle.Position = default and UDim2.new(1, -18, 0, 2) or UDim2.new(0, 2, 0, 2)
+    circle.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+    circle.Parent = toggleBtn
+    UICorner(circle, 9)
+
+    local toggled = default
+    local function updateToggle()
+        if toggled then
+            toggleBtn.BackgroundColor3 = Color3.fromRGB(0, 200, 130)
+            circle:TweenPosition(UDim2.new(1, -18, 0, 2), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.15, true)
+        else
+            toggleBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
+            circle:TweenPosition(UDim2.new(0, 2, 0, 2), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.15, true)
+        end
+    end
+
+    toggleBtn.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            toggled = not toggled
+            updateToggle()
+            if callback then callback(toggled) end
+        end
+    end)
+
+    updateToggle()
+
+    return toggleBtn, function() return toggled end
+end
+
+local function createSlider(parent, text, min, max, default, callback)
+    local frame = Instance.new("Frame")
+    frame.Size = UDim2.new(1, 0, 0, 40)
+    frame.BackgroundTransparency = 1
+    frame.Parent = parent
+
+    local label = Instance.new("TextLabel")
+    label.Text = text
+    label.Font = Enum.Font.GothamSemibold
+    label.TextSize = 17
+    label.TextColor3 = Color3.fromRGB(220, 220, 255)
+    label.BackgroundTransparency = 1
+    label.Size = UDim2.new(1, -60, 0.5, 0)
+    label.TextXAlignment = Enum.TextXAlignment.Left
+    label.Parent = frame
+
+    local valueLabel = Instance.new("TextLabel")
+    valueLabel.Text = tostring(default)
+    valueLabel.Font = Enum.Font.GothamSemibold
+    valueLabel.TextSize = 17
+    valueLabel.TextColor3 = Color3.fromRGB(180, 180, 255)
+    valueLabel.BackgroundTransparency = 1
+    valueLabel.Size = UDim2.new(0, 50, 0.5, 0)
+    valueLabel.Position = UDim2.new(1, -50, 0, 0)
+    valueLabel.Parent = frame
+
+    local sliderBar = Instance.new("Frame")
+    sliderBar.BackgroundColor3 = Color3.fromRGB(60, 60, 90)
+    sliderBar.Size = UDim2.new(1, -10, 0, 10)
+    sliderBar.Position = UDim2.new(0, 5, 1, -20)
+    sliderBar.Parent = frame
+    UICorner(sliderBar, 6)
+
+    local sliderFill = Instance.new("Frame")
+    sliderFill.BackgroundColor3 = Color3.fromRGB(0, 170, 220)
+    sliderFill.Size = UDim2.new((default - min) / (max - min), 0, 1, 0)
+    sliderFill.Parent = sliderBar
+    UICorner(sliderFill, 6)
+
+    local dragging = false
+
+    sliderBar.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = true
+            local mouse = game.Players.LocalPlayer:GetMouse()
+            local relativeX = math.clamp(mouse.X - sliderBar.AbsolutePosition.X, 0, sliderBar.AbsoluteSize.X)
+            local percent = relativeX / sliderBar.AbsoluteSize.X
+            local value = math.floor(min + (max - min) * percent)
+            sliderFill.Size = UDim2.new(percent, 0, 1, 0)
+            valueLabel.Text = tostring(value)
+            if callback then callback(value) end
+        end
+    end)
+
+    sliderBar.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = false
+        end
+    end)
+
+    sliderBar.InputChanged:Connect(function(input)
+        if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+            local mouse = game.Players.LocalPlayer:GetMouse()
+            local relativeX = math.clamp(mouse.X - sliderBar.AbsolutePosition.X, 0, sliderBar.AbsoluteSize.X)
+            local percent = relativeX / sliderBar.AbsoluteSize.X
+            local value = math.floor(min + (max - min) * percent)
+            sliderFill.Size = UDim2.new(percent, 0, 1, 0)
+            valueLabel.Text = tostring(value)
+            if callback then callback(value) end
+        end
+    end)
+
+    return frame
+end
+
+local function createButton(parent, text, callback)
+    local btn = Instance.new("TextButton")
+    btn.Size = UDim2.new(1, 0, 0, 35)
+    btn.BackgroundColor3 = Color3.fromRGB(50, 50, 80)
+    btn.TextColor3 = Color3.fromRGB(220, 220, 255)
+    btn.Text = text
+    btn.Font = Enum.Font.GothamSemibold
+    btn.TextSize = 18
+    btn.AutoButtonColor = false
+    btn.Parent = parent
+    UICorner(btn, 8)
+
+    btn.MouseEnter:Connect(function()
+        btn.BackgroundColor3 = Color3.fromRGB(70, 70, 120)
+    end)
+    btn.MouseLeave:Connect(function()
+        btn.BackgroundColor3 = Color3.fromRGB(50, 50, 80)
+    end)
+
+    btn.MouseButton1Click:Connect(function()
+        if callback then callback() end
+    end)
+
+    return btn
+end
+
+-- Variáveis de estado dos sistemas
+local state = {
+    aimbot = false,
+    triggerbot = false,
+    silentaim = false,
+    espPlayers = false,
+    espItems = false,
+    chams = false,
+    fly = false,
+    noclip = false,
+    fov = 70,
+    speed = 16,
+}
+
+local tabCombat, contentCombat = createTab("Combat")
+local tabVisuals, contentVisuals = createTab("Visuals")
+local tabUtility, contentUtility = createTab("Utility")
+local tabSettings, contentSettings = createTab("Settings")
+
+selectTab("Combat")
+
+local toggleAimbot, getAimbot = createToggle(contentCombat, "Aimbot", state.aimbot, function(val)
+    state.aimbot = val
+    print("Aimbot:", val)
+    -- Aqui pode adicionar ativação real do aimbot
+end)
+
+local toggleTrigger, getTrigger = createToggle(contentCombat, "Trigger Bot", state.triggerbot, function(val)
+    state.triggerbot = val
+    print("Trigger Bot:", val)
+end)
+
+local toggleSilent, getSilent = createToggle(contentCombat, "Silent Aim", state.silentaim, function(val)
+    state.silentaim = val
+    print("Silent Aim:", val)
+end)
+
+createSlider(contentCombat, "FOV", 10, 180, state.fov, function(val)
+    state.fov = val
+    print("FOV ajustado para:", val)
+end)
+
+selectTab("Visuals")
+
+local toggleESPPlayers, getESPPlayers = createToggle(contentVisuals, "ESP Players", state.espPlayers, function(val)
+    state.espPlayers = val
+    print("ESP Players:", val)
+end)
+
+local toggleESPItems, getESPItems = createToggle(contentVisuals, "ESP Items", state.espItems, function(val)
+    state.espItems = val
+    print("ESP Items:", val)
+end)
+
+local toggleChams, getChams = createToggle(contentVisuals, "Chams", state.chams, function(val)
+    state.chams = val
+    print("Chams:", val)
+end)
+
+selectTab("Utility")
+
+local toggleFly, getFly = createToggle(contentUtility, "Fly", state.fly, function(val)
+    state.fly = val
+    print("Fly:", val)
+end)
+
+local toggleNoClip, getNoClip = createToggle(contentUtility, "No Clip", state.noclip, function(val)
+    state.noclip = val
+    print("No Clip:", val)
+end)
+
+createSlider(contentUtility, "Speed", 8, 100, state.speed, function(val)
+    state.speed = val
+    print("Speed ajustada para:", val)
+end)
+
+createButton(contentUtility, "Auto Farm", function()
+    print("Auto Farm ativado")
+    -- Função auto farm real aqui
+end)
+
+selectTab("Settings")
+
+local info = Instance.new("TextLabel")
+info.Text = "Clique em 'Escolher tecla' e pressione a tecla desejada para minimizar/restaurar o menu"
+info.Font = Enum.Font.Gotham
+info.TextSize = 15
+info.TextColor3 = Color3.fromRGB(180, 180, 200)
+info.BackgroundTransparency = 1
+info.Size = UDim2.new(1, -20, 0, 50)
+info.Position = UDim2.new(0, 10, 0, 10)
+info.TextWrapped = true
+info.Parent = contentSettings
+
+local chooseKeyButton = createButton(contentSettings, "Escolher tecla", nil)
+chooseKeyButton.Size = UDim2.new(0, 130, 0, 30)
+chooseKeyButton.Position = UDim2.new(0, 10, 0, 70)
+
+local selectedKey = Enum.KeyCode.K
+chooseKeyButton.Text = "Tecla atual: "..selectedKey.Name
+
+local choosingKey = false
+
+chooseKeyButton.MouseButton1Click:Connect(function()
+    if choosingKey then return end
+    choosingKey = true
+    chooseKeyButton.Text = "Pressione uma tecla..."
+end)
+
+UserInputService.InputBegan:Connect(function(input, processed)
+    if processed then return end
+    if choosingKey and input.UserInputType == Enum.UserInputType.Keyboard then
+        selectedKey = input.KeyCode
+        chooseKeyButton.Text = "Tecla atual: "..selectedKey.Name
+        choosingKey = false
         return
     end
-    
-    VerifyButton.Text = "Verificando..."
-    StatusLabel.Text = "Verificando Key..."
-    StatusLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-    
-    local success, message = verifyKey(key)
-    
-    if success then
-        StatusLabel.Text = message or "Key Válida"
-        
-        StatusLabel.TextColor3 = Color3.fromRGB(0, 255, 0)
-        
-                wait(2)
-        
-        ScreenGui:Destroy()
-        -- Seu Script Aqui
-    else
-        StatusLabel.Text = message or "Key Inválida"
-     
-        StatusLabel.TextColor3 = Color3.fromRGB(255, 0, 0)
-        
-                wait(2)
-        
-        VerifyButton.Text = "Verificar Key"
+    if input.KeyCode == selectedKey then
+        if ScreenGui.Enabled then
+            -- Animar fechamento
+            local tweenClose = TweenService:Create(MainFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {BackgroundTransparency = 1, Size = UDim2.new(0, 0, 0, 0)})
+            tweenClose:Play()
+            tweenClose.Completed:Wait()
+            ScreenGui.Enabled = false
+            -- Reset propriedades para abrir depois
+            MainFrame.Size = UDim2.new(0, 600, 0, 400)
+            MainFrame.BackgroundTransparency = 0
+        else
+            ScreenGui.Enabled = true
+            MainFrame.BackgroundTransparency = 1
+            MainFrame.Size = UDim2.new(0, 0, 0, 0)
+            local tweenOpen = TweenService:Create(MainFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundTransparency = 0, Size = UDim2.new(0, 600, 0, 400)})
+            tweenOpen:Play()
+        end
     end
 end)
+
+MinimizeButton.MouseButton1Click:Connect(function()
+    if ScreenGui.Enabled then
+        local tweenClose = TweenService:Create(MainFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {BackgroundTransparency = 1, Size = UDim2.new(0, 0, 0, 0)})
+        tweenClose:Play()
+        tweenClose.Completed:Wait()
+        ScreenGui.Enabled = false
+        MainFrame.Size = UDim2.new(0, 600, 0, 400)
+        MainFrame.BackgroundTransparency = 0
+    else
+        ScreenGui.Enabled = true
+        MainFrame.BackgroundTransparency = 1
+        MainFrame.Size = UDim2.new(0, 0, 0, 0)
+        local tweenOpen = TweenService:Create(MainFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundTransparency = 0, Size = UDim2.new(0, 600, 0, 400)})
+        tweenOpen:Play()
+    end
+end)
+
+CloseButton.MouseButton1Click:Connect(function()
+    ScreenGui:Destroy()
+end)
+
+-- Dragging (igual antes)
+local dragging = false
+local dragInput, dragStart, startPos
+
+MainFrame.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = true
+        dragStart = input.Position
+        startPos = MainFrame.Position
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragging = false
+            end
+        end)
+    end
+end)
+
+MainFrame.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement then
+        dragInput = input
+    end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+    if input == dragInput and dragging then
+        local delta = input.Position - dragStart
+        MainFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+        Shadow.Position = MainFrame.Position - UDim2.new(0,5,0,5)
+    end
+end)
+
+print("Kavo UI Clone atualizado com minimizar oculto, tecla dinâmica e animação!")
